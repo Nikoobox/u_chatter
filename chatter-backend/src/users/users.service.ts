@@ -1,26 +1,51 @@
 import { Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  constructor(private readonly usersRepository: UsersRepository) {}
+
+  async create(createUserInput: CreateUserInput) {
+    return this.usersRepository.create({
+      ...createUserInput,
+      password: await this.hasPassword(createUserInput.password),
+    });
   }
 
-  findAll() {
-    return `This action returns all users`;
+  private async hasPassword(password: string) {
+    return await bcrypt.hash(password, 10);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findAll() {
+    return this.usersRepository.find({});
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async findOne(id: string) {
+    return this.usersRepository.findOne(({ _id }) => _id === id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(_id: string, updateUserInput: UpdateUserInput) {
+    if (updateUserInput.password) {
+      updateUserInput.password = await this.hasPassword(
+        updateUserInput.password,
+      );
+    }
+    return this.usersRepository.findOneAndUpdate(
+      { _id },
+      {
+        $set: {
+          ...updateUserInput,
+          password: updateUserInput.password,
+        },
+      },
+    );
+  }
+
+  remove(_id: string) {
+    return this.usersRepository.findOneAndDelete({ _id });
   }
 }
