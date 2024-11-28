@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './common/database/database.module';
 import { UsersModule } from './users/users.module';
 import { LoggerModule } from 'nestjs-pino';
+import { AuthModule } from './auth/auth.module';
 
 const PROD = 'production';
 
@@ -46,6 +47,7 @@ const PROD = 'production';
       },
       inject: [ConfigService],
     }),
+    AuthModule,
   ],
 
   controllers: [AppController],

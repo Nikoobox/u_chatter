@@ -38,6 +38,7 @@ const Auth: FC<PropsWithChildren<AuthProps>> = ({
           md: "30%",
         },
         margin: "0 auto",
+        justifyContent: "center",
       }}
     >
       <TextField
