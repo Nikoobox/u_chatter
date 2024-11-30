@@ -21,7 +21,7 @@ const useLogin = () => {
         body: JSON.stringify(request),
       }
     );
-
+    console.log("FE useLogin-res", res);
     if (!res.ok) {
       if (res.status === 401) {
         setError("Credentials are not valid.");

@@ -6,10 +6,13 @@ import { Link as MUILink } from "@mui/material";
 import { Auth } from "./";
 import { useCreateUser } from "../../hooks/apollo-client";
 import { extractErrorMessage } from "../../utils/errors";
+import useLogin from "../../hooks/useLogin";
 
 const Signup: FC = () => {
   const [createUser] = useCreateUser();
   const [error, setError] = useState<string>("");
+  const { login } = useLogin();
+
   return (
     <Auth
       submitLabel="Signup"
@@ -23,6 +26,7 @@ const Signup: FC = () => {
               },
             },
           });
+          await login({ email, password });
           setError("");
         } catch (e) {
           const errorMessage = extractErrorMessage(e);
